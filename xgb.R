@@ -193,5 +193,37 @@ output$final_status = as.integer(output$final_status)
 
 #exporting the prediction file as csv
 write.csv(output,"xgb.csv",row.names = F)
+                
+                
+                
+                #################################### Kaam 25 #############################
+                rm(list = ls())
+setwd("C:/Users/Hemant.Sain/Desktop/zs/dataset")
+
+library(data.table)
+holi = fread("holidays.csv", header = T , stringsAsFactors = FALSE, check.names = FALSE,na.strings=c("","NA"))
+ex= fread("promotional_expense.csv", header = T , stringsAsFactors = FALSE, check.names = FALSE,na.strings=c("","NA"))
+train = fread("yds_train2018.csv", header = T , stringsAsFactors = FALSE, check.names = FALSE,na.strings=c("","NA"))
+names(ex)[4]= "Product_ID"
+
+temp = merge(x = train, y = ex, by = c('Year','Month','Country','Product_ID'), all.x = TRUE)
+
+library(splitstackshape)
+
+date = holi$Date
+
+holi = cSplit(holi, "Date", ",")
+
+holi$Date_4 = as.integer(holi$Date_3/7+1)
+
+holi$is_holi = 1
+
+names(holi)[3] = 'Year'
+names(holi)[4] = 'Month'
+names(holi)[6] = 'Week'
+
+
+temp2 = merge(x = temp, y = holi, by = c('Year','Month','Week','Country'), all.x = TRUE)
+
 
 
